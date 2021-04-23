@@ -1,0 +1,45 @@
+Bootstrap: library
+From: ubuntu:18.04
+Stage: build
+
+%setup
+    mkdir ${SINGULARITY_ROOTFS}/cisTEM
+
+
+%files
+    /groups/himesb/cisTEM_downstream_bah/build/INTEL-gpu/src/* /cisTEM/bin
+    /groups/himesb/testGPU_k3image_rot.mrc /cisTEM
+    /groups/himesb/testGPU_ref.mrc /cisTEM
+%environment
+
+
+%post
+    apt-get update && apt-get install -y libfftw3-dev pkg-config libgtk2.0-dev
+
+    NOW=`date`
+    echo "export NOW=\"${NOW}\"" >> $SINGULARITY_ENVIRONMENT
+
+%runscript
+    echo "Container was created $NOW"
+    echo "Arguments received: $*"
+    exec echo "$@"
+
+%startscript
+    nc -lp $LISTEN_PORT
+
+%test
+    grep -q NAME=\"Ubuntu\" /etc/os-release
+    if [ $? -eq 0 ]; then
+        echo "Container base is Ubuntu as expected."
+    else
+        echo "Container base is not Ubuntu."
+        exit 1
+    fi
+
+%labels
+    Author Bah
+    Version v0.0.1
+
+%help
+    This is a demo container used to illustrate a def file that uses all
+    supported sections.

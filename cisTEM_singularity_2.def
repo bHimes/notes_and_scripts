@@ -1,0 +1,56 @@
+Bootstrap: library
+From: ubuntu:18.04
+Stage: build
+
+%setup
+    mkdir ${SINGULARITY_ROOTFS}/cisTEM
+
+%help
+    This container is build to run cisTEM on ubuntu 18.04. The Linux kernel in older distros (e.g. CentOS 6) will not support this container.
+
+    This encapsulates a developmental version of cisTEM that comes with no warrantee and no support. We're happy that you want to try the latest and greatest, and welcome your feedback, but make no promise to chase bugs.
+
+    The source code can be found on github, commit b50d965a56c089488485b45c7431e19dcb038cb1.
+
+    Remember the --nv flag if you plan to use GPUs in template matching
+
+    singularity exec --nv /cisTEM/bin/match_template
+
+%files
+    /groups/himesb/cisTEM_downstream_bah/build/INTEL-gpu/src/* /cisTEM/bin
+#    /groups/himesb/testGPU_k3image_rot.mrc /cisTEM
+#    /groups/himesb/testGPU_ref.mrc /cisTEM
+
+%environment
+    alias lt='ls -lrth'
+
+
+%post
+    apt-get update && apt-get install -y libfftw3-dev pkg-config libgtk2.0-dev
+
+    NOW=`date`
+    echo "export NOW=\"${NOW}\"" >> $SINGULARITY_ENVIRONMENT
+
+%runscript
+    echo "Container was created $NOW"
+    echo "Arguments received: $*"
+    exec echo "$@"
+
+%startscript
+    nc -lp $LISTEN_PORT
+
+%test
+    grep -q NAME=\"Ubuntu\" /etc/os-release
+    if [ $? -eq 0 ]; then
+        echo "Container base is Ubuntu as expected."
+    else
+        echo "Container base is not Ubuntu."
+        exit 1
+    fi
+
+#    /cisTEM/bin/console_test
+
+%labels
+    Author BAH
+    Version v1.0.2 (21986909a60d7579dc1dde9c1c977fd033dcdebe)
+
