@@ -1,3 +1,24 @@
-git push --force-with-lease origin master
+
+
+# Because I forked the cisTEM repo, I need to add a reference to the original. Using the following, we see only reference to the fork
+git remote -v
+# Add the repo (may switch from niko to tim at some point)
+ git remote add upstream https://github.com/ngrigorieff/cisTEM.git
+# confirm it is there now
+git remote -v
+
+
+# Fetch the current state of the upstream
+ git fetch upstream
+
+# Could merge or rebase. I'll pull in manually and commit
+
+
+git remote add upstream	https://github.com/timothygrant80/cisTEM.git 
+
 
 git pull --rebase upstream master
+
+git rebase upstream/master
+
+git push --force-with-lease origin master
