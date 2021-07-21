@@ -22,3 +22,23 @@ git pull --rebase upstream master
 git rebase upstream/master
 
 git push --force-with-lease origin master
+
+# Switch to ssh over https auth
+
+git remote set-url origin git@github.com:bHimes/cisTEM_docs.git
+
+
+- also add this to ~/.ssh/config
+Host github*
+    # The host that has the remote Git repository
+    Hostname github.com
+    # Username for remote SSH user (For GitHub, everyone uses the name `git`)
+    User git
+    # Path to your private SSH key
+    IdentityFile ~/.ssh/id_local_himesb
+
+# not really git specifically, but it runs git to trim history and push up build html to github pages.
+
+ghp-import -n -p -o _build/html/
+
+
